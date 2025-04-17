@@ -1,8 +1,12 @@
 {
   "name": "presidio-launchpad-msec-batch2-backend",
   "version": "1.0.0",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +20,11 @@
     "url": "https://github.com/LingeshwaranR/presidio-launchpad-msec-batch2-backend/issues"
   },
   "homepage": "https://github.com/LingeshwaranR/presidio-launchpad-msec-batch2-backend#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "sequelize": "^6.37.7"
+  },
+  "devDependencies": {
+    "@types/sequelize": "^4.28.20"
+  }
 }
