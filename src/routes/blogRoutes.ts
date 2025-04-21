@@ -19,6 +19,7 @@ router.post("/", async (req: any, res: any) => {
   }
 
   try {
+    // TODO: Replace with actual user ID from auth
     const blogData = { title, content, description, image_url, user_id: 1 };
     const newBlog = await createBlogService(blogData);
     return res
@@ -35,6 +36,7 @@ router.get("/", async (req: any, res: any) => {
   const { explore, myBlogs, favourites } = req.query;
 
   try {
+    // TODO: Replace with actual user ID from auth
     const blogs = await getAllBlogsService({
       user_id: 1,
       explore: explore === "true",
@@ -90,6 +92,7 @@ router.put("/:id", async (req: any, res: any) => {
   }
 
   try {
+    // TODO: Replace with actual user ID from auth
     const blogData = {
       id,
       title,
