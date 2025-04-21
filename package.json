@@ -25,6 +25,10 @@
     "sequelize": "^6.37.7"
   },
   "devDependencies": {
-    "@types/sequelize": "^4.28.20"
+    "@types/sequelize": "^4.28.20",
+    "body-parser": "^2.2.0",
+    "bcryptjs": "^3.0.2",
+    "jsonwebtoken": "^9.0.2",
+    "sequelize-cli": "^6.6.2"
   }
 }
