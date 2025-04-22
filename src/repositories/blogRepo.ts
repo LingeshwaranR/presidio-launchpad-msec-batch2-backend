@@ -7,7 +7,6 @@ import { Blog } from "../models/associations";
 
 export const createBlog = async (blogData: IBlog) => {
   try {
-    await blogs.create({ ...blogData });
     return await blogs.create({ ...blogData });
   } catch (error) {
     return { error: true, message: error };
@@ -65,7 +64,7 @@ export const updateBlog = async (blogData: IBlog, blogId: number) => {
       {
         where: {
           id: blogId,
-          //user_id: userId,
+          user_id: blogData.user_id,
         },
       }
     );
@@ -75,7 +74,7 @@ export const updateBlog = async (blogData: IBlog, blogId: number) => {
   }
 };
 
-export const deleteBlog = async (blogId: number) => {
+export const deleteBlog = async (blogId: number, userId:number) => {
   try {
     const existingBlog = await blogs.findByPk(blogId);
     if (!existingBlog) {
@@ -84,7 +83,7 @@ export const deleteBlog = async (blogId: number) => {
     const deleteBlog = await blogs.destroy({
       where: {
         id: blogId,
-        //user_id: userId,
+        user_id: userId,
       },
     });
     console.log(deleteBlog);

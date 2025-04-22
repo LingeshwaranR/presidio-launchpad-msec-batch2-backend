@@ -6,10 +6,12 @@ import {
   updateBlogService,
 } from "../service/blogService";
 import { createResponse } from "../utils/responseWrapper";
+import { authenticateToken } from "../middleware/auth";
+import { getUserIdFromToken } from "../utils/jwt";
 
 const router = express.Router();
 
-router.post("/", async (req: any, res: any) => {
+router.post("/", authenticateToken, async (req: any, res: any) => {
   const { title, content, description, image_url } = req.body;
 
   if (!title || !content || !description || !image_url) {
@@ -19,8 +21,13 @@ router.post("/", async (req: any, res: any) => {
   }
 
   try {
-    // TODO: Replace with actual user ID from auth
-    const blogData = { title, content, description, image_url, user_id: 1 };
+    const blogData = {
+      title,
+      content,
+      description,
+      image_url,
+      user_id: getUserIdFromToken(req.headers["authorization"]),
+    };
     const newBlog = await createBlogService(blogData);
     return res
       .status(200)
@@ -32,13 +39,13 @@ router.post("/", async (req: any, res: any) => {
   }
 });
 
-router.get("/", async (req: any, res: any) => {
+router.get("/", authenticateToken, async (req: any, res: any) => {
   const { explore, myBlogs, favourites } = req.query;
 
   try {
     // TODO: Replace with actual user ID from auth
     const blogs = await getAllBlogsService({
-      user_id: 1,
+      user_id: getUserIdFromToken(req.headers["authorization"]),
       explore: explore === "true",
       myBlogs: myBlogs === "true",
       favourites: favourites === "true",
@@ -54,7 +61,7 @@ router.get("/", async (req: any, res: any) => {
   }
 });
 
-router.delete("/:id", async (req: any, res: any) => {
+router.delete("/:id", authenticateToken, async (req: any, res: any) => {
   const { id } = req.params;
 
   if (!id) {
@@ -64,11 +71,10 @@ router.delete("/:id", async (req: any, res: any) => {
   }
 
   try {
-    const deletedBlog = await deleteBlogService(parseInt(id));
+    const userId = getUserIdFromToken(req.headers["authorization"]);
+    const deletedBlog = await deleteBlogService(parseInt(id), userId);
     if (!deletedBlog) {
-      return res
-        .status(404)
-        .json(createResponse("Blog not found", {}, null));
+      return res.status(404).json(createResponse("Blog not found", {}, null));
     }
 
     return res
@@ -81,7 +87,7 @@ router.delete("/:id", async (req: any, res: any) => {
   }
 });
 
-router.put("/:id", async (req: any, res: any) => {
+router.put("/:id", authenticateToken, async (req: any, res: any) => {
   const { id } = req.params;
   const { title, content, description, image_url } = req.body;
 
@@ -99,14 +105,12 @@ router.put("/:id", async (req: any, res: any) => {
       content,
       description,
       image_url,
-      user_id: 1,
+      user_id: getUserIdFromToken(req.headers["authorization"]),
     };
 
     const updatedBlog = await updateBlogService(blogData, parseInt(id));
     if (updatedBlog === null) {
-      return res
-        .status(404)
-        .json(createResponse("Blog not found", {}, null));
+      return res.status(404).json(createResponse("Blog not found", {}, null));
     }
 
     return res

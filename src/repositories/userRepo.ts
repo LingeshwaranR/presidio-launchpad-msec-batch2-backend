@@ -8,6 +8,7 @@ export const createUser = async (register: any) => {
       username,
       password,
     });
+    console.log(" create user", user);
     return user.dataValues;
   } catch (error) {
     return { error: true, message: error };
@@ -17,8 +18,15 @@ export const createUser = async (register: any) => {
 export const checkForExistingUser = async (email: string) => {
   try {
     const user = await User.findOne({ where: { email } });
-    return user;
+    if (!user) return null;
+    console.log("user", user);
+    return {
+      username: user?.dataValues.username,
+      email: user?.dataValues.email,
+      id: user?.dataValues.id,
+      password: user?.dataValues.password,
+    };
   } catch (error) {
     return { error: true, message: error };
   }
-}
+};

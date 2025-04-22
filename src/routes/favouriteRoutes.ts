@@ -5,10 +5,13 @@ import {
   removeFavouriteService,
 } from "../service/favouritesService";
 import { createResponse } from "../utils/responseWrapper"; 
+import { authenticateToken } from "../middleware/auth";
+import { get } from "http";
+import { getUserIdFromToken } from "../utils/jwt";
 
 const router = express.Router();
 
-router.post("/:id", async (req: any, res: any) => {
+router.post("/:id", authenticateToken, async (req: any, res: any) => {
   try {
     const { id } = req.params;
     if (!id) {
@@ -18,7 +21,7 @@ router.post("/:id", async (req: any, res: any) => {
     }
 
     const favouriteBlogs = await addFavouriteService({
-      user_id: 1,
+      user_id: getUserIdFromToken(req.headers["authorization"]),
       blog_id: parseInt(id),
     });
 
@@ -38,7 +41,7 @@ router.post("/:id", async (req: any, res: any) => {
   }
 });
 
-router.delete("/:id", async (req: any, res: any) => {
+router.delete("/:id", authenticateToken , async (req: any, res: any) => {
   try {
     const { id } = req.params;
     if (!id) {
@@ -48,7 +51,7 @@ router.delete("/:id", async (req: any, res: any) => {
     }
 
     const favouriteBlogs = await removeFavouriteService({
-      user_id: 1,
+      user_id: getUserIdFromToken(req.headers["authorization"]),
       blog_id: parseInt(id),
     });
 
