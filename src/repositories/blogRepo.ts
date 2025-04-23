@@ -86,7 +86,6 @@ export const deleteBlog = async (blogId: number, userId:number) => {
         user_id: userId,
       },
     });
-    console.log(deleteBlog);
     return deleteBlog;
   } catch (error) {
     return { error: true, message: error };

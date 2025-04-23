@@ -18,7 +18,6 @@ export const checkForExistingUser = async (email: string) => {
   try {
     const user = await User.findOne({ where: { email } });
     if (!user) return null;
-    console.log("user", user);
     return {
       username: user?.dataValues.username,
       email: user?.dataValues.email,
