@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import { loginService, register } from "../service/userService";
 import { createResponse } from "../utils/responseWrapper";
+import { blogMessages, userMessage } from "../constants/messages";
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ router.post("/register", async (req: any, res: any) => {
   if (!email || !username || !password) {
     return res
       .status(400)
-      .json(createResponse("All fields are required", {}, "Missing fields"));
+      .json(createResponse(blogMessages.missing.fields, {}, "Missing fields"));
   }
 
   try {
@@ -20,7 +21,7 @@ router.post("/register", async (req: any, res: any) => {
 
     return res
       .status(201)
-      .json(createResponse("User registered successfully", registeredUser));
+      .json(createResponse(userMessage.success.create, registeredUser));
   } catch (error) {
     const errMsg = (error as Error).message;
 
@@ -32,7 +33,7 @@ router.post("/register", async (req: any, res: any) => {
 
     return res
       .status(500)
-      .json(createResponse("Internal server error", {}, errMsg));
+      .json(createResponse(userMessage.error.internal, {}, errMsg));
   }
 });
 
@@ -42,7 +43,7 @@ router.post("/login", async (req: any, res: any) => {
   if (!email || !password) {
     return res
       .status(400)
-      .json(createResponse("Email and password are required", {}, "Missing fields"));
+      .json(createResponse(userMessage.missing.fields, {}, "Missing fields"));
   }
 
   try {
@@ -51,16 +52,16 @@ router.post("/login", async (req: any, res: any) => {
     if (!token) {
       return res
         .status(401)
-        .json(createResponse("Invalid credentials", {}, "Unauthorized"));
+        .json(createResponse(userMessage.error.invalid_credentials, {}, "Unauthorized"));
     }
 
     return res
       .status(200)
-      .json(createResponse("Login successful", { token }));
+      .json(createResponse(userMessage.success.login, { token }));
   } catch (err) {
     return res
       .status(500)
-      .json(createResponse("Login failed", {}, err));
+      .json(createResponse(userMessage.error.login, {}, err));
   }
 });
 

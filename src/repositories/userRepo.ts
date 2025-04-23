@@ -8,7 +8,6 @@ export const createUser = async (register: any) => {
       username,
       password,
     });
-    console.log(" create user", user);
     return user.dataValues;
   } catch (error) {
     return { error: true, message: error };

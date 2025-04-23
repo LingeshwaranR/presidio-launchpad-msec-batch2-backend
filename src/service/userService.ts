@@ -1,16 +1,15 @@
 import { checkForExistingUser, createUser } from "../repositories/userRepo";
 const bcrypt = require("bcryptjs");
 import { generateJwtToken } from "../utils/jwt";
-
+import { userMessage } from '../constants/messages'
 export const register = async (
   email: string,
   username: string,
   password: string
 ) => {
   const exists = await checkForExistingUser(email);
-  console.log("exists", exists);
   if (exists !== null) {
-    throw new Error("User already exists");
+    throw new Error(userMessage.error.exists);
   }
   return await createUser({ email, username, password });
 };
@@ -21,12 +20,12 @@ export const loginService = async (
 ) => {
   const user = await checkForExistingUser(email);
   if (!user) {
-    throw new Error("User not found");
+    throw new Error(userMessage.error.not_found);
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        throw new Error("Invalid credentials")
+        throw new Error(userMessage.error.invalid_credentials); 
       }
 
   const token = generateJwtToken(user.id, user.username, user.email);
