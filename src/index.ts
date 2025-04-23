@@ -20,12 +20,8 @@ app.use("/api/blog", blogRoutes);
 app.use("/api/favourite", favouriteRoutes);
 app.use('/api/auth', authRoutes);
 
-// app.listen(PORT, () => {
-//   console.log(`Server running at http://localhost:${PORT}`);
-// });
-
 sequelize
-  .sync({ alter: true }) // or { force: true } for dev-only full reset
+  .sync({ alter: true }) 
   .then(() => {
     console.log("Database synced successfully.");
     app.listen(PORT, () => {
