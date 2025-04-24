@@ -18,7 +18,7 @@ export const createBlogService = async (blogData: IBlog) => {
 export const getAllBlogsService = async (blogData: IGetBlogs) => {
   try {
     if (blogData.explore) {
-      const exploreBlogs = await getAllBlogs();
+      const exploreBlogs = await getAllBlogs(blogData.user_id);
       return exploreBlogs;
     }
     if (blogData.myBlogs) {

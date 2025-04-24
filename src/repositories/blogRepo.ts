@@ -13,13 +13,34 @@ export const createBlog = async (blogData: IBlog) => {
   }
 };
 
-export const getAllBlogs = async () => {
+export const getAllBlogs = async (userId: number) => {
   try {
-    return await blogs.findAll();
+    console.log("in getAllBlogs");
+
+    const allBlogs = await Blog.findAll({
+      include: [
+        {
+          model: User,
+          as: 'Users', 
+          where: { id: userId }, 
+          required: false, 
+          attributes: ['id'], 
+        },
+      ],
+    });
+
+    const result = allBlogs.map((blog: any) => ({
+      ...blog.toJSON(),
+      isFavourite: blog.Users.length > 0, 
+    }));
+
+    return result;
   } catch (error) {
+    console.error("Error fetching blogs:", error);
     return { error: true, message: error };
   }
 };
+
 
 export const getMyBlogs = async (userId: number) => {
   try {
@@ -27,27 +48,56 @@ export const getMyBlogs = async (userId: number) => {
       where: {
         user_id: userId,
       },
+      include: [
+        {
+          model: User,
+          as: 'Users', 
+          where: { id: userId }, 
+          required: false, 
+          attributes: ['id'], 
+        },
+      ],
     });
-    return addBlog;
+console.log("addBlog", addBlog);
+    const result = addBlog.map((blog: any) => ({
+      ...blog.toJSON(),
+      isFavourite: blog.Users.length > 0, 
+    }));
+
+    return result;
   } catch (error) {
+    console.error("Error fetching my blogs:", error);
     return { error: true, message: error };
   }
 };
 
+
 export const getMyFavouriteBlogs = async (userId: number) => {
   try {
+    console.log("in getMyFavouriteBlogs");
     const user = await User.findByPk(userId, {
       include: [
         {
           model: Blog,
-          through: { attributes: [] },
+          as: 'Blogs',
+          required: false,  
+          attributes: ['id', 'title', 'content'], 
+          through: {
+            attributes: ['blog_id'], 
+          },
         },
       ],
     });
+    console.log("user", user);
 
     if (!user) return [];
+    const result = (user.get('Blogs') as any[]).map((blog: any) => ({
+      ...blog.toJSON(),
+      isFavourite: true,
+    }));
+    
 
-    return user.get("Blogs");
+    return result;
   } catch (error) {
     console.error("Error fetching favorite blogs:", error);
     return { error: true, message: error };
