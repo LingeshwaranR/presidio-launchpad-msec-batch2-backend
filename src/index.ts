@@ -4,9 +4,15 @@ import blogRoutes from "./routes/blogRoutes";
 import favouriteRoutes from "./routes/favouriteRoutes";
 import authRoutes from "./routes/authRoutes";
 import sequelize from "./config/db";
+import cors from "cors";
+
 dotenv.config();
 
 const app = express();
+app.use(cors({
+  origin: "http://localhost:5173", // replace with your frontend origin
+  credentials: true,
+}));
 app.use(express.json());
 const PORT =  process.env.PORT || 3000;
 
@@ -19,7 +25,7 @@ app.use("/api/favourite", favouriteRoutes);
 app.use('/api/auth', authRoutes);
 
 sequelize
-  .sync({ alter: true }) 
+  .sync({ alter: true })
   .then(() => {
     console.log("Database synced successfully.");
     app.listen(PORT, () => {
