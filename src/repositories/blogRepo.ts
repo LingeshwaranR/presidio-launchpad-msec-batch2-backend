@@ -81,9 +81,9 @@ export const getMyFavouriteBlogs = async (userId: number) => {
           model: Blog,
           as: 'Blogs',
           required: false,  
-          attributes: ['id', 'title', 'content'], 
+          attributes: ['id', 'title', 'content', 'description', 'image_url', 'user_id', 'created_at', 'updated_at'], 
           through: {
-            attributes: ['blog_id'], 
+            attributes: [], 
           },
         },
       ],
