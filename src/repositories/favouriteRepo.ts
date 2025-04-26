@@ -2,7 +2,12 @@ import { IFavourites } from "../Interfaces/favourites";
 import Favourites from "../models/favorites";
 export const createFavourite = async (favorites: IFavourites) => {
   try {
-    const existingfavourite = await Favourites.findByPk(favorites.blog_id);
+    const existingfavourite = await Favourites.findOne({
+      where: {
+        user_id: favorites.user_id,
+        blog_id: favorites.blog_id,
+      },
+    });
     if (existingfavourite) {
       return null;
     }
@@ -21,7 +26,13 @@ export const createFavourite = async (favorites: IFavourites) => {
 
 export const deleteFavourite = async (favorites: IFavourites) => {
   try {
-    const existingfavourite = await Favourites.findByPk(favorites.blog_id);
+    const existingfavourite = await Favourites.findOne({
+      where: {
+        user_id: favorites.user_id,
+        blog_id: favorites.blog_id,
+      },
+    });
+    console.log("existingfavourite", existingfavourite);
     if (!existingfavourite) {
       return null;
     }

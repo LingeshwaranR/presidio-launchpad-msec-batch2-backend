@@ -19,7 +19,7 @@ app.use("/api/favourite", favouriteRoutes);
 app.use('/api/auth', authRoutes);
 
 sequelize
-  .sync({ alter: true }) 
+  .sync({ force: false }) 
   .then(() => {
     console.log("Database synced successfully.");
     app.listen(PORT, () => {

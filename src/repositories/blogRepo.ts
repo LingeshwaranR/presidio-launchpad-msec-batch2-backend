@@ -32,6 +32,7 @@ export const getAllBlogs = async (userId: number) => {
     const result = allBlogs.map((blog: any) => ({
       ...blog.toJSON(),
       isFavourite: blog.Users.length > 0, 
+      isMyBlog : blog["user_id"] == userId
     }));
 
     return result;
@@ -58,10 +59,10 @@ export const getMyBlogs = async (userId: number) => {
         },
       ],
     });
-console.log("addBlog", addBlog);
     const result = addBlog.map((blog: any) => ({
       ...blog.toJSON(),
       isFavourite: blog.Users.length > 0, 
+      isMyBlog : blog["user_id"] == userId
     }));
 
     return result;
@@ -94,6 +95,7 @@ export const getMyFavouriteBlogs = async (userId: number) => {
     const result = (user.get('Blogs') as any[]).map((blog: any) => ({
       ...blog.toJSON(),
       isFavourite: true,
+      isMyBlog : blog["user_id"] == userId
     }));
     
 
