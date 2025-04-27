@@ -32,7 +32,6 @@ export const deleteFavourite = async (favorites: IFavourites) => {
         blog_id: favorites.blog_id,
       },
     });
-    console.log("existingfavourite", existingfavourite);
     if (!existingfavourite) {
       return null;
     }

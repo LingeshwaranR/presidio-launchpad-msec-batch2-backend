@@ -37,7 +37,6 @@ export const getUserIdFromToken = (token_with_bearer: string) => {
   const token = token_with_bearer.split(' ')[1]
   const decoded = decodeJwtToken(token);
   if (decoded && typeof decoded === 'object' && 'id' in decoded) {
-    console.log("decoded", decoded);
     return decoded.id;
   }
   return null;

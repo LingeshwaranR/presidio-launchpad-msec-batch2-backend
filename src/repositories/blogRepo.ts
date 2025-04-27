@@ -15,25 +15,39 @@ export const createBlog = async (blogData: IBlog) => {
 
 export const getAllBlogs = async (userId: number) => {
   try {
-    console.log("in getAllBlogs");
-
     const allBlogs = await Blog.findAll({
       include: [
         {
           model: User,
-          as: 'Users', 
-          where: { id: userId }, 
-          required: false, 
+          as: 'Users',
+          where: { id: userId },
+          required: false,
           attributes: ['id'], 
+          through: { attributes: [] }, 
+        },
+        {
+          model: User,
+          as: 'author',  
+          attributes: ['id', 'username'],
         },
       ],
     });
+    
 
-    const result = allBlogs.map((blog: any) => ({
-      ...blog.toJSON(),
-      isFavourite: blog.Users.length > 0, 
-      isMyBlog : blog["user_id"] == userId
-    }));
+    const result = allBlogs.map((blog: any) => {
+      const blogJson = blog.toJSON();
+      const author = blogJson.author?.username || null;
+      
+      delete blogJson.Users;
+      delete blogJson.author;
+
+      return {
+        ...blogJson,
+        isFavourite: (blogJson.Users?.length || 0) > 0,
+        isMyBlog: blogJson.user_id === userId,
+        author,
+      };
+    });
 
     return result;
   } catch (error) {
@@ -45,25 +59,41 @@ export const getAllBlogs = async (userId: number) => {
 
 export const getMyBlogs = async (userId: number) => {
   try {
-    const addBlog = await blogs.findAll({
+    const myBlogs = await Blog.findAll({
       where: {
         user_id: userId,
       },
       include: [
         {
           model: User,
-          as: 'Users', 
-          where: { id: userId }, 
-          required: false, 
-          attributes: ['id'], 
+          as: 'Users',
+          where: { id: userId },
+          required: false,
+          attributes: ['id'],
+          through: { attributes: [] },
+        },
+        {
+          model: User,
+          as: 'author',
+          attributes: ['id', 'username'],
         },
       ],
     });
-    const result = addBlog.map((blog: any) => ({
-      ...blog.toJSON(),
-      isFavourite: blog.Users.length > 0, 
-      isMyBlog : blog["user_id"] == userId
-    }));
+
+    const result = myBlogs.map((blog: any) => {
+      const blogJson = blog.toJSON();
+      const author = blogJson.author?.username || null;
+      
+      delete blogJson.Users;
+      delete blogJson.author;
+
+      return {
+        ...blogJson,
+        isFavourite: (blogJson.Users?.length || 0) > 0,
+        isMyBlog: blogJson.user_id === userId,
+        author,
+      };
+    });
 
     return result;
   } catch (error) {
@@ -73,31 +103,43 @@ export const getMyBlogs = async (userId: number) => {
 };
 
 
+
 export const getMyFavouriteBlogs = async (userId: number) => {
   try {
-    console.log("in getMyFavouriteBlogs");
     const user = await User.findByPk(userId, {
       include: [
         {
           model: Blog,
           as: 'Blogs',
-          required: false,  
-          attributes: ['id', 'title', 'content', 'description', 'image_url', 'user_id', 'created_at', 'updated_at'], 
-          through: {
-            attributes: [], 
-          },
+          required: false,
+          attributes: ['id', 'title', 'content', 'description', 'image_url', 'user_id', 'created_at', 'updated_at'],
+          through: { attributes: [] },
+          include: [
+            {
+              model: User,
+              as: 'author',
+              attributes: ['username'],
+            },
+          ],
         },
       ],
     });
-    console.log("user", user);
 
     if (!user) return [];
-    const result = (user.get('Blogs') as any[]).map((blog: any) => ({
-      ...blog.toJSON(),
-      isFavourite: true,
-      isMyBlog : blog["user_id"] == userId
-    }));
-    
+
+    const result = (user.get('Blogs') as any[]).map((blog: any) => {
+      const blogJson = blog.toJSON();
+      const author = blogJson.author?.username || null;
+
+      delete blogJson.author;
+
+      return {
+        ...blogJson,
+        author,
+        isFavourite: true,
+        isMyBlog: blogJson.user_id === userId,
+      };
+    });
 
     return result;
   } catch (error) {
@@ -105,6 +147,8 @@ export const getMyFavouriteBlogs = async (userId: number) => {
     return { error: true, message: error };
   }
 };
+
+
 
 export const updateBlog = async (blogData: IBlog, blogId: number) => {
   try {
