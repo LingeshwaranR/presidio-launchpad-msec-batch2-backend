@@ -19,25 +19,22 @@ export const getAllBlogs = async (userId: number) => {
       include: [
         {
           model: User,
-          as: 'Users',
-          where: { id: userId },
-          required: false,
-          attributes: ['id'], 
-          through: { attributes: [] }, 
+          as: "Users",
+          attributes: ["id"],
+          through: { attributes: [] },
         },
         {
           model: User,
-          as: 'author',  
-          attributes: ['id', 'username'],
+          as: "author",
+          attributes: ["id", "username"],
         },
       ],
     });
-    
 
     const result = allBlogs.map((blog: any) => {
       const blogJson = blog.toJSON();
       const author = blogJson.author?.username || null;
-      
+
       delete blogJson.Users;
       delete blogJson.author;
 
@@ -56,7 +53,6 @@ export const getAllBlogs = async (userId: number) => {
   }
 };
 
-
 export const getMyBlogs = async (userId: number) => {
   try {
     const myBlogs = await Blog.findAll({
@@ -66,16 +62,16 @@ export const getMyBlogs = async (userId: number) => {
       include: [
         {
           model: User,
-          as: 'Users',
+          as: "Users",
           where: { id: userId },
           required: false,
-          attributes: ['id'],
+          attributes: ["id"],
           through: { attributes: [] },
         },
         {
           model: User,
-          as: 'author',
-          attributes: ['id', 'username'],
+          as: "author",
+          attributes: ["id", "username"],
         },
       ],
     });
@@ -83,7 +79,7 @@ export const getMyBlogs = async (userId: number) => {
     const result = myBlogs.map((blog: any) => {
       const blogJson = blog.toJSON();
       const author = blogJson.author?.username || null;
-      
+
       delete blogJson.Users;
       delete blogJson.author;
 
@@ -102,23 +98,30 @@ export const getMyBlogs = async (userId: number) => {
   }
 };
 
-
-
 export const getMyFavouriteBlogs = async (userId: number) => {
   try {
     const user = await User.findByPk(userId, {
       include: [
         {
           model: Blog,
-          as: 'Blogs',
+          as: "Blogs",
           required: false,
-          attributes: ['id', 'title', 'content', 'description', 'image_url', 'user_id', 'created_at', 'updated_at'],
+          attributes: [
+            "id",
+            "title",
+            "content",
+            "description",
+            "image_url",
+            "user_id",
+            "created_at",
+            "updated_at",
+          ],
           through: { attributes: [] },
           include: [
             {
               model: User,
-              as: 'author',
-              attributes: ['username'],
+              as: "author",
+              attributes: ["username"],
             },
           ],
         },
@@ -127,7 +130,7 @@ export const getMyFavouriteBlogs = async (userId: number) => {
 
     if (!user) return [];
 
-    const result = (user.get('Blogs') as any[]).map((blog: any) => {
+    const result = (user.get("Blogs") as any[]).map((blog: any) => {
       const blogJson = blog.toJSON();
       const author = blogJson.author?.username || null;
 
@@ -147,8 +150,6 @@ export const getMyFavouriteBlogs = async (userId: number) => {
     return { error: true, message: error };
   }
 };
-
-
 
 export const updateBlog = async (blogData: IBlog, blogId: number) => {
   try {
@@ -170,7 +171,7 @@ export const updateBlog = async (blogData: IBlog, blogId: number) => {
   }
 };
 
-export const deleteBlog = async (blogId: number, userId:number) => {
+export const deleteBlog = async (blogId: number, userId: number) => {
   try {
     const existingBlog = await blogs.findByPk(blogId);
     if (!existingBlog) {
