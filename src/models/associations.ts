@@ -15,6 +15,16 @@ Blog.belongsToMany(User, {
   otherKey: "user_id",
 });
 
+Blog.belongsTo(User, {
+  foreignKey: 'user_id',
+  as: 'author',
+});
+
+User.hasMany(Blog, {
+  foreignKey: 'user_id',
+  as: 'authoredBlogs',
+});
+
 // console.log(User.associations); 
 // console.log(Blog.associations);
 

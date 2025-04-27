@@ -9,8 +9,7 @@ import {
 import { IBlog, IGetBlogs } from "../Interfaces/blogs";
 export const createBlogService = async (blogData: IBlog) => {
   try {
-    const addBlog = await createBlog(blogData);
-    return addBlog;
+    return await createBlog(blogData);;
   } catch (error) {
     return { error: true, message: error };
   }
@@ -19,7 +18,7 @@ export const createBlogService = async (blogData: IBlog) => {
 export const getAllBlogsService = async (blogData: IGetBlogs) => {
   try {
     if (blogData.explore) {
-      const exploreBlogs = await getAllBlogs();
+      const exploreBlogs = await getAllBlogs(blogData.user_id);
       return exploreBlogs;
     }
     if (blogData.myBlogs) {
@@ -35,10 +34,9 @@ export const getAllBlogsService = async (blogData: IGetBlogs) => {
   }
 };
 
-export const deleteBlogService = async (blogId: number) => {
+export const deleteBlogService = async (blogId: number, userId: number) => {
   try {
-    const removeBlog = await deleteBlog(blogId);
-    return removeBlog;
+    return await deleteBlog(blogId, userId);
   } catch (error) {
     return { error: true, message: error };
   }
@@ -46,9 +44,7 @@ export const deleteBlogService = async (blogId: number) => {
 
 export const updateBlogService = async (blogData: IBlog, blogId: number) => {
   try {
-    const Blog = await updateBlog(blogData, blogId);
-    console.log(Blog);
-    return Blog;
+    return await updateBlog(blogData, blogId);;
   } catch (error) {
     return { error: true, message: error };
   }

@@ -17,8 +17,14 @@ export const createUser = async (register: any) => {
 export const checkForExistingUser = async (email: string) => {
   try {
     const user = await User.findOne({ where: { email } });
-    return user;
+    if (!user) return null;
+    return {
+      username: user?.dataValues.username,
+      email: user?.dataValues.email,
+      id: user?.dataValues.id,
+      password: user?.dataValues.password,
+    };
   } catch (error) {
     return { error: true, message: error };
   }
-}
+};

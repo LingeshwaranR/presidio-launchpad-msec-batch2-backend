@@ -1,4 +1,4 @@
-import { IResponseWrapper } from "../Interfaces/ResponseWrapper";
+import { IResponseWrapper } from "../Interfaces/responseWrapper";
 
 export const createResponse = (
   message: string,
