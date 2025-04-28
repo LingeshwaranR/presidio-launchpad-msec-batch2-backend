@@ -57,7 +57,7 @@ The following tables are used:
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/LingeshwaranR/presidio-launchpad-msec-batch2-backend.git
-cd your-project-name
+cd presidio-launchpad-msec-batch2-backend
 ```
 
 ### 2. Install dependencies
